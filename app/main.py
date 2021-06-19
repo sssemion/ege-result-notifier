@@ -97,9 +97,12 @@ async def handle(message: types.Message):
     elif status == strings.Status.CAPTCHA:
         if services.set_captcha_answer(message.chat.id, message.text):
             if services.log_in(message.chat.id):
-                services.save_initial_exams(message.chat.id)
-                await message.answer(strings.successful_authorization + services.get_text_results(message.chat.id),
-                                     parse_mode=types.ParseMode.MARKDOWN, reply_markup=keyboards.for_authorized_users)
+                success = services.save_initial_exams(message.chat.id)
+                if success:
+                    await message.answer(strings.successful_authorization + services.get_text_results(message.chat.id),
+                                         parse_mode=types.ParseMode.MARKDOWN, reply_markup=keyboards.for_authorized_users)
+                else:
+                    await message.answer(strings.authorization_denied, parse_mode=types.ParseMode.MARKDOWN)
             else:
                 await message.answer(strings.authorization_error, parse_mode=types.ParseMode.MARKDOWN)
         else:

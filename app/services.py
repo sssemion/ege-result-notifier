@@ -155,8 +155,10 @@ def log_in(chat_id) -> bool:
             logging.error("AUTHORIZATION: ConnectionError")
 
 
-def save_initial_exams(chat_id):
+def save_initial_exams(chat_id) -> bool:
     exams = get_exams(chat_id)
+    if exams is None:
+        return False
     with create_session() as session:
         user = session.query(User).get(chat_id)
         for exam in exams:
@@ -168,6 +170,7 @@ def save_initial_exams(chat_id):
             else:
                 result = ExamResult(exam_id=exam["ExamId"], result=None)
             user.exam_results.append(result)
+            return True
 
 
 def get_exams(chat_id) -> typing.Optional[dict]:
