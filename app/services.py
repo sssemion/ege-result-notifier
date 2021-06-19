@@ -182,7 +182,7 @@ def get_exams(chat_id) -> typing.Optional[dict]:
             if r:
                 return r.json()["Result"]["Exams"]
             else:
-                logging.error(f"EXAM: {r.status_code} {r.text}")
+                logging.error(f"EXAM: {r.status_code} {r.text} (user {chat_id})")
                 return None
         except requests.exceptions.ConnectionError:
             logging.error("EXAM: ConnectionError")
