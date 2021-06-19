@@ -5,9 +5,9 @@
 ----
 Для запуска бота локально необходимо:
 + Создать в корне проекта файл `.env` и заполнить следдующими данными:
-```CHECK_EGE_EXAM_URL="http://checkege.rustest.ru/api/exam"
-CHECK_EGE_CAPTCHA_URL="http://checkege.rustest.ru/api/captcha"
-CHECK_EGE_LOGIN_URL="http://checkege.rustest.ru/api/participant/login"
+```CHECK_EGE_EXAM_URL="https://checkege.rustest.ru/api/exam"
+CHECK_EGE_CAPTCHA_URL="https://checkege.rustest.ru/api/captcha"
+CHECK_EGE_LOGIN_URL="https://checkege.rustest.ru/api/participant/login"
 
 DB_FILENAME="data/db.sqlite"
 BOT_API_TOKEN="<YOUR BOT API TOKEN>"
