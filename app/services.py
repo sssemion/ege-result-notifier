@@ -170,7 +170,7 @@ def save_initial_exams(chat_id) -> bool:
             else:
                 result = ExamResult(exam_id=exam["ExamId"], result=None)
             user.exam_results.append(result)
-            return True
+        return True
 
 
 def get_exams(chat_id) -> typing.Optional[dict]:
