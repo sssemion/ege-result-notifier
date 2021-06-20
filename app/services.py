@@ -165,7 +165,7 @@ def save_initial_exams(chat_id) -> bool:
             exam_obj = session.query(Exam).get(exam["ExamId"])
             if exam_obj is None:
                 session.add(Exam(id=exam["ExamId"], name=exam["Subject"]))
-            if exam["HasResult"]:
+            if exam["HasResult"] and not exam["IsHidden"]:
                 result = ExamResult(exam_id=exam["ExamId"], result=exam["TestMark"])
             else:
                 result = ExamResult(exam_id=exam["ExamId"], result=None)
