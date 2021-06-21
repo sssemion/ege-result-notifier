@@ -1,6 +1,9 @@
 import asyncio
 import logging
 
+import aiogram
+from aiogram.utils import exceptions
+
 from app import services
 from app.data.db_session import create_session
 from app.data.models import User, ExamResult
@@ -23,12 +26,17 @@ async def check_for_new_results():
                 for exam in exams:
                     exam_result = session.query(ExamResult).filter(ExamResult.chat_id == user.chat_id,
                                                                    ExamResult.exam_id == exam["ExamId"]).first()
-                    if exam["HasResult"] and exam_result.result is None\
+                    if exam["HasResult"] and exam_result.result is None \
                             and not exam["IsHidden"]:  # В полученных данных результат есть, а в бд - нет
                         new += 1
                         exam_result.result = exam["TestMark"]
-                        await bot.send_message(user.chat_id, strings.new_result.format(subject=exam_result.exam.name,
-                                                                                       result=exam_result.result))
+                        session.commit()
+                        try:
+                            await bot.send_message(user.chat_id,
+                                                   strings.new_result.format(subject=exam_result.exam.name,
+                                                                             result=exam_result.result))
+                        except exceptions.BotBlocked:
+                            pass
                 await asyncio.sleep(1)
         logging.info(f"AUTOCHECKER: finished ({new} new results, {errors} errors)")
         await asyncio.sleep(600)
