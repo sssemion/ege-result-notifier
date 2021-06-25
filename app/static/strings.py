@@ -35,6 +35,7 @@ authorization_error = "\U0000274C Участник не найден. Прове
                       "отправьте комануду /start"
 authorization_denied = "\U0000274C К сожалению, сервер CheckEge отказал в регистрации. Повторите попытку позже"
 new_result = "Пришли новые результаты!\n\U00002611 *{subject}*: {result}"
+result_changed = "Результат изменился!\n\U00002611 *{subject}*: {result}"
 
 essay_passed = "_Зачёт_"
 essay_not_passed = "_Незачёт_"

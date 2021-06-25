@@ -1,7 +1,7 @@
 import asyncio
 import logging
 
-import aiogram
+from aiogram import types
 from aiogram.utils import exceptions
 
 from app import services
@@ -16,6 +16,7 @@ async def check_for_new_results():
     while True:
         logging.info("AUTOCHECKER: started")
         new = 0
+        changed = 0
         errors = 0
         with create_session() as session:
             for user in session.query(User).filter(User.status == strings.Status.AUTHORIZED.value):
@@ -34,9 +35,22 @@ async def check_for_new_results():
                         try:
                             await bot.send_message(user.chat_id,
                                                    strings.new_result.format(subject=exam_result.exam.name,
-                                                                             result=exam_result.result))
+                                                                             result=exam_result.result),
+                                                   parse_mode=types.ParseMode.MARKDOWN)
+                        except exceptions.BotBlocked:
+                            pass
+                    elif exam["HasResult"] and not exam["IsHidden"] \
+                            and exam_result.result != exam["TestMark"]:
+                        changed += 1
+                        exam_result.result = exam["TestMark"]
+                        session.commit()
+                        try:
+                            await bot.send_message(user.chat_id,
+                                                   strings.result_changed.format(subject=exam_result.exam.name,
+                                                                                 result=exam_result.result),
+                                                   parse_mode=types.ParseMode.MARKDOWN)
                         except exceptions.BotBlocked:
                             pass
                 await asyncio.sleep(1)
-        logging.info(f"AUTOCHECKER: finished ({new} new results, {errors} errors)")
+        logging.info(f"AUTOCHECKER: finished ({new} new results, {changed} changed, {errors} errors)")
         await asyncio.sleep(600)
